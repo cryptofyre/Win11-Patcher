@@ -59,9 +59,18 @@ func commands() {
 }
 
 func main() {
-	checkpath := os.Args[1]
-	if strings.Contains(checkpath, ".iso") {
-		patchiso(checkpath)
+	if len(os.Args) > 1 {
+		checkpath := os.Args[1]
+		if strings.Contains(checkpath, ".iso") {
+			patchiso(checkpath)
+		} else {
+			info()
+			commands()
+			err := app.Run(os.Args)
+			if err != nil {
+				log.Fatal(err)
+			}
+		}
 	} else {
 		info()
 		commands()
