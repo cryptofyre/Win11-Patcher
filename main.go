@@ -171,7 +171,6 @@ func patchiso(isopath string) {
 
 	exSevenPath := exPath + "\\7z.exe"
 	exSevendllPath := exPath + "\\7z.exe"
-	fmt.Println(exSevenPath)
 
 	log.Printf("Checking iso...")
 	iso, err := os.Open(isopath)
