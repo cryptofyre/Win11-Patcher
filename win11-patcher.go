@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"io"
 	"log"
@@ -28,10 +29,58 @@ func main() {
 
 	if isoPath == emptystring {
 		fmt.Println("Win11-Patcher by @cryptofyre")
-		fmt.Println("Usage: win11-patcher.exe C:/Users/nice/windows11.iso")
-		fmt.Println("Please specify a Windows 11 .iso in the launch arguments or drag and drop a .iso into the application.")
-		fmt.Println("")
-		fmt.Println("DISCLAIMER: This application only allows an upgrade from Windows 10 to 11 using the Setup.exe provided in the zip after the patching process has completed. This application does not yet allow the user to install from scratch using the bootable environment.")
+		fmt.Println("ISO Usage: win11-patcher.exe C:/Users/nice/windows11.iso or drag and drop a .iso onto the applications executable.")
+		fmt.Println(" ")
+		fmt.Println("You have started the application without providing an ISO so alternative patching methods will be listed below for those running Windows 11 on a leaked build or on Windows 10 but want to recieve the Windows 11 insider updates without having to have a TPM module or secure boot.")
+		fmt.Println(" ")
+		fmt.Println("1. Insider Dev patch (Requires administrator)")
+		fmt.Println("2. ISO upgrade patch (Drag and drop a Win11 ISO onto the application .exe.)")
+		fmt.Println("3. Exit")
+		var choice string
+		fmt.Println(" ")
+		fmt.Println("Please enter a choice (ex. 1):")
+		fmt.Scanln(&choice)
+		if choice == "1" {
+			log.Printf("Insider Dev Patch initalizing.")
+			log.Printf("If your not already in the Release Preview insider ring do that now. After your done press ENTER to continue.")
+			fmt.Print("Press 'Enter' to continue...")
+			bufio.NewReader(os.Stdin).ReadBytes('\n')
+			log.Printf("Beginning registry patch...")
+			log.Printf("Downloading registry patch from CDN.")
+			fileUrl := "https://cryptofyre.org/cdn/w11-insider-dev.reg"
+			upgradePatch := exPath + "/w11-insider-dev.reg"
+			errdl := DownloadFile(upgradePatch, fileUrl)
+			if errdl != nil {
+				panic(errdl)
+			}
+			log.Printf("Successfully downloaded patch(es) to " + upgradePatch)
+			log.Printf("Installing and replacing registry key(s).")
+			log.Printf("(If this process fails please relaunch Win11-Patcher with Administrator privilleges.)")
+			regpatch := exec.Command("reg", "import", upgradePatch)
+			regpatch.Stdout = os.Stdout
+			regpatch.Stderr = os.Stderr
+			regpatcherr := regpatch.Start()
+			if regpatcherr != nil {
+				log.Fatal(regpatcherr)
+				if err != nil {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+			}
+			regpatcherr = regpatch.Wait()
+			os.Remove(upgradePatch)
+			log.Printf("Successfully imported registry key(s). Please reboot your computer then check the Insider settings in Updates & Security.")
+			fmt.Print("Press 'Enter' to continue...")
+			bufio.NewReader(os.Stdin).ReadBytes('\n')
+
+		} else if choice == "2" {
+			fmt.Println("In order to use this option you must have obtained a Windows 11 ISO. Once you have the ISO drag it on the application exe and the app will automatically start processing your ISO.")
+			fmt.Print("Press 'Enter' to continue...")
+			bufio.NewReader(os.Stdin).ReadBytes('\n')
+		} else if choice == "3" {
+			os.Exit(0)
+		}
+
 	} else {
 		log.Printf("Win11-Patcher by @cryptofyre")
 		log.Printf("DISCLAIMER: This application only allows an upgrade from Windows 10 to 11 using the Setup.exe provided in the zip after the patching process has completed. This application does not yet allow the user to install from scratch using the bootable environment.")
