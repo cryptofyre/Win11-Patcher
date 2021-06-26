@@ -24,10 +24,8 @@ func main() {
 
 	exSevenPath := exPath + "/7z.exe"
 	fmt.Println(exSevenPath)
-
-	emptystring := ""
-
-	if isoPath == emptystring {
+	// write a init func here to use this.
+	if len(isoPath) < 1 {
 		// change this to a switch.
 		// instead of asking users questions take in user flags.
 		fmt.Println("Win11-Patcher by @cryptofyre")
