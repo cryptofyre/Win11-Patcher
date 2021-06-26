@@ -1,4 +1,4 @@
-module cryptofyre.org/win11-patcher
+module github.com/cryptofyre/Win11-Patcher
 
 go 1.16
 
